@@ -55,7 +55,7 @@ const SHOWCASE = [
     desc: "The next evolution in DJI's enterprise lineup. Modular payload system supports thermal, LiDAR, and multispectral sensors for any mission profile.",
   },
   {
-    img: fc100, code: "FC100", name: "FlyCart 100", tag: "IN STOCK", year: "2026",
+    img: fc100, code: "FC100", name: "FlyCart 100", tag: "IN STOCK", year: "2024",
     role: "Precision Autopilot", specs: ["RTK accuracy", "Dual IMU", "Failsafe AI"],
     desc: "Heavy-lift cargo drone rated for 100kg payloads. The FlyCart 100 redefines aerial logistics — from emergency resupply to industrial transport in GPS-denied zones.",
   },
@@ -65,7 +65,7 @@ const SHOWCASE = [
     desc: "Deploy fully autonomous drone operations 24/7. The Dock 3 handles charging, storage, mission dispatch, and live transmission without human intervention.",
   },
   {
-    img: m400, code: "M400", name: "Matrice 400", tag: "BESTSELLER", year: "2025",
+    img: m400, code: "M400", name: "Matrice 400", tag: "BESTSELLER", year: "2024",
     role: "Heavy Surveillance", specs: ["55 min flight", "15km range", "2.7kg payload"],
     desc: "Qatar's most deployed enterprise drone. The M400 delivers unmatched endurance and payload capacity for perimeter security and infrastructure inspection.",
   },
@@ -253,9 +253,9 @@ const SPECS = [
 //   /public/datasheets/matrice-4t-datasheet.pdf
 //   /public/datasheets/flycart-100-datasheet.pdf
 const FLEET = [
-  { name: "Matrice 400", role: "Heavy Surveillance", desc: "Long-range enterprise platform with multi-sensor payload, 55-min flight time, and 15km transmission range.", datasheet: "/datasheets/matrice-400-datasheet.pdf" },
-  { name: "Matrice 4T", role: "Thermal & Visual", desc: "Quad-sensor payload with 4K visual + radiometric thermal. Engineered for perimeter security and night operations.", datasheet: "/datasheets/matrice-4t-datasheet.pdf" },
-  { name: "FlyCart 100", role: "Cargo & Delivery", desc: "Heavy-lift delivery drone rated for 100kg payload. Ideal for logistics, emergency response, and remote resupply.", datasheet: "/datasheets/flycart-100-datasheet.pdf" },
+  { name: "Matrice 400", role: "Heavy Surveillance", desc: "Long-range enterprise platform with multi-sensor payload, 55-min flight time, and 15km transmission range.", datasheet: "/datasheets/matrice-400-datasheet.pdf", video: "/videos/matrice-400.mp4" },
+  { name: "Matrice 4T", role: "Thermal & Visual", desc: "Quad-sensor payload with 4K visual + radiometric thermal. Engineered for perimeter security and night operations.", datasheet: "/datasheets/matrice-4t-datasheet.pdf", video: "/videos/matrice-4t.mp4" },
+  { name: "FlyCart 100", role: "Cargo & Delivery", desc: "Heavy-lift delivery drone rated for 100kg payload. Ideal for logistics, emergency response, and remote resupply.", datasheet: "/datasheets/flycart-100-datasheet.pdf", video: "/videos/flycart-100.mp4" },
 ];
 
 // ── SPEC COUNTER ──────────────────────────────────────────────
@@ -317,7 +317,7 @@ function ShowcaseSection({ openModal }) {
           <p className="dp-showcase-eyebrow">What's New</p>
           <h2 className="dp-showcase-title">LATEST FLEET<br/><span style={{ color: "transparent", WebkitTextStroke: "1px rgba(240,240,240,0.18)" }}>{"& EQUIPMENT"}</span></h2>
         </div>
-        <div className="dp-showcase-sub">Updated Q1 2026</div>
+        <div className="dp-showcase-sub">Updated Q1 2025</div>
       </div>
       <div className="dp-showcase-track">
         {SHOWCASE.map((item, i) => (
@@ -343,6 +343,85 @@ function ShowcaseSection({ openModal }) {
         ))}
       </div>
     </section>
+  );
+}
+
+// ── FLEET CARD WITH VIDEO ─────────────────────────────────────
+function FleetCard({ drone, index }) {
+  const videoRef = useRef(null);
+  const [playing, setPlaying] = useState(false);
+
+  const togglePlay = (e) => {
+    e.preventDefault();
+    const vid = videoRef.current;
+    if (!vid) return;
+    if (playing) {
+      vid.pause();
+      setPlaying(false);
+    } else {
+      vid.play().then(() => setPlaying(true)).catch(() => {});
+    }
+  };
+
+  return (
+    <motion.div
+      className={`dp-fleet-card${playing ? " playing" : ""}`}
+      initial={{ opacity: 0, y: 24 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.2 }}
+      transition={{ duration: 0.6, delay: index * 0.12 }}
+    >
+      {/* Idle dark bg */}
+      <div className="dp-fleet-card-bg"/>
+      <div className="dp-fleet-card-idle-num">0{index + 1}</div>
+
+      {/* Video */}
+      <video
+        ref={videoRef}
+        className="dp-fleet-video"
+        src={drone.video}
+        muted
+        loop
+        playsInline
+        preload="metadata"
+      />
+
+      {/* Overlay gradient */}
+      <div className="dp-fleet-card-overlay"/>
+
+      {/* Hover hint */}
+      <div className="dp-fleet-video-hint">▶ Play</div>
+
+      {/* Content */}
+      <div className="dp-fleet-card-content">
+        <div className="dp-fleet-card-num">0{index + 1} / 0{3}</div>
+        <div className="dp-fleet-name">{drone.name}</div>
+        <div className="dp-fleet-role">{drone.role}</div>
+        <p className="dp-fleet-desc">{drone.desc}</p>
+        <div className="dp-fleet-card-footer">
+          <a
+            className="dp-fleet-cta"
+            href={drone.datasheet}
+            download
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={(e) => e.stopPropagation()}
+          >
+            ↓ Datasheet
+          </a>
+          <button
+            className="dp-fleet-play-btn"
+            onClick={togglePlay}
+            aria-label={playing ? "Pause video" : "Play video"}
+          >
+            <div className="dp-fleet-play-icon"/>
+            <div className="dp-fleet-pause-icon">
+              <span/><span/>
+            </div>
+          </button>
+        </div>
+      </div>
+    </motion.div>
   );
 }
 
@@ -626,26 +705,130 @@ export default function DronePage() {
         .dp-features-list li:hover { color: #111; }
 
         /* ── FLEET ── */
-        .dp-fleet { padding: 96px 64px; background: #f7f8f9; border-top: 1px solid #ebebeb; }
+        .dp-fleet { padding: 96px 64px; background: #0a0f1a; border-top: 1px solid rgba(255,255,255,0.04); }
         .dp-fleet-header { margin-bottom: 56px; display: flex; align-items: flex-end; justify-content: space-between; }
         .dp-fleet-eyebrow { font-family: var(--mono); font-size: 9px; letter-spacing: 4px; color: #c8102e; text-transform: uppercase; margin-bottom: 16px; display: flex; align-items: center; gap: 10px; }
         .dp-fleet-eyebrow::before { content: ''; display: block; width: 20px; height: 1px; background: #c8102e; }
-        .dp-fleet-title { font-family: var(--display); font-size: clamp(28px, 3vw, 44px); letter-spacing: 1px; color: #111; }
-        .dp-fleet-count { font-family: var(--mono); font-size: 10px; letter-spacing: 2px; color: #bbb; text-transform: uppercase; }
-        .dp-fleet-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
-        .dp-fleet-card { background: #fff; border: 1px solid #ebebeb; padding: 0; transition: box-shadow 0.3s ease, transform 0.3s ease; position: relative; overflow: hidden; }
-        .dp-fleet-card:hover { box-shadow: 0 12px 40px rgba(0,0,0,0.08), 0 2px 8px rgba(200,16,46,0.06); transform: translateY(-3px); }
-        .dp-fleet-card-accent { height: 3px; background: linear-gradient(to right, #c8102e, rgba(200,16,46,0.2)); }
-        .dp-fleet-card-body { padding: 36px 32px 32px; }
-        .dp-fleet-card-num { font-family: var(--display); font-size: 56px; color: #f5f5f5; letter-spacing: 2px; line-height: 1; margin-bottom: -8px; }
-        .dp-fleet-name { font-family: var(--display); font-size: 22px; letter-spacing: 2px; color: #111; margin-bottom: 6px; }
-        .dp-fleet-role { font-family: var(--mono); font-size: 8px; letter-spacing: 3px; color: #c8102e; text-transform: uppercase; margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid #f0f0f0; }
-        .dp-fleet-desc { font-size: 13px; color: #777; line-height: 1.75; font-weight: 300; }
-        .dp-fleet-card-footer { padding: 16px 32px; border-top: 1px solid #f5f5f5; display: flex; align-items: center; justify-content: space-between; }
-        .dp-fleet-cta { font-family: var(--mono); font-size: 8px; letter-spacing: 2px; color: #bbb; text-transform: uppercase; background: none; border: none; cursor: pointer; padding: 0; transition: color 0.2s; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; }
+        .dp-fleet-title { font-family: var(--display); font-size: clamp(28px, 3vw, 44px); letter-spacing: 1px; color: #f0f0f0; }
+        .dp-fleet-count { font-family: var(--mono); font-size: 10px; letter-spacing: 2px; color: rgba(255,255,255,0.2); text-transform: uppercase; }
+        .dp-fleet-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; }
+
+        .dp-fleet-card { position: relative; overflow: hidden; height: 500px; cursor: pointer; background: #0d1220; }
+
+        /* video */
+        .dp-fleet-video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center; opacity: 0; transition: opacity 0.7s ease; filter: saturate(0.7) brightness(0.5); }
+        .dp-fleet-card.playing .dp-fleet-video { opacity: 1; }
+        .dp-fleet-card.playing:hover .dp-fleet-video { filter: saturate(1) brightness(0.65); }
+
+        /* idle state: dark gradient bg */
+        .dp-fleet-card-bg {
+          position: absolute; inset: 0;
+          background: linear-gradient(135deg, #111827 0%, #0a0f1a 100%);
+          transition: opacity 0.7s ease;
+        }
+        .dp-fleet-card.playing .dp-fleet-card-bg { opacity: 0; }
+
+        /* idle number watermark */
+        .dp-fleet-card-idle-num {
+          position: absolute; right: -10px; bottom: -20px;
+          font-family: var(--display); font-size: 160px; letter-spacing: -4px;
+          color: rgba(255,255,255,0.03); line-height: 1; pointer-events: none;
+          transition: opacity 0.5s;
+        }
+        .dp-fleet-card.playing .dp-fleet-card-idle-num { opacity: 0; }
+
+        /* gradient overlay over video */
+        .dp-fleet-card-overlay {
+          position: absolute; inset: 0;
+          background: linear-gradient(to top, rgba(5,8,16,0.96) 0%, rgba(5,8,16,0.5) 45%, rgba(5,8,16,0.1) 100%);
+          z-index: 1;
+        }
+
+        /* red accent line left */
+        .dp-fleet-card::before {
+          content: ''; position: absolute; left: 0; top: 15%; bottom: 15%;
+          width: 2px; background: linear-gradient(to bottom, transparent, #c8102e, transparent);
+          z-index: 2; opacity: 0; transition: opacity 0.4s ease;
+        }
+        .dp-fleet-card:hover::before { opacity: 1; }
+
+        /* content */
+        .dp-fleet-card-content {
+          position: absolute; inset: 0; z-index: 2;
+          display: flex; flex-direction: column; justify-content: flex-end;
+          padding: 32px 28px;
+        }
+        .dp-fleet-card-num {
+          font-family: var(--display); font-size: 11px; letter-spacing: 4px;
+          color: rgba(255,255,255,0.2); text-transform: uppercase; margin-bottom: 16px;
+        }
+        .dp-fleet-name {
+          font-family: var(--display); font-size: clamp(20px, 2vw, 26px);
+          letter-spacing: 2px; color: #f0f0f0; margin-bottom: 6px; line-height: 1.1;
+        }
+        .dp-fleet-role {
+          font-family: var(--mono); font-size: 8px; letter-spacing: 3px;
+          color: #c8102e; text-transform: uppercase; margin-bottom: 14px;
+        }
+        .dp-fleet-desc {
+          font-size: 12px; color: rgba(255,255,255,0.38); line-height: 1.75;
+          font-weight: 300; margin-bottom: 24px;
+          max-height: 0; overflow: hidden; opacity: 0;
+          transition: max-height 0.5s ease, opacity 0.4s ease;
+        }
+        .dp-fleet-card:hover .dp-fleet-desc { max-height: 80px; opacity: 1; }
+
+        .dp-fleet-card-footer {
+          display: flex; align-items: center; justify-content: space-between;
+          padding-top: 16px; border-top: 1px solid rgba(255,255,255,0.08);
+        }
+        .dp-fleet-cta {
+          font-family: var(--mono); font-size: 8px; letter-spacing: 2px;
+          color: rgba(255,255,255,0.3); text-transform: uppercase;
+          background: none; border: none; cursor: pointer; padding: 0;
+          transition: color 0.2s; text-decoration: none;
+          display: inline-flex; align-items: center; gap: 6px;
+        }
         .dp-fleet-card:hover .dp-fleet-cta { color: #c8102e; }
-        .dp-fleet-dot { width: 6px; height: 6px; border-radius: 50%; background: #e8e8e8; transition: background 0.3s; }
-        .dp-fleet-card:hover .dp-fleet-dot { background: #c8102e; }
+
+        /* play/pause indicator */
+        .dp-fleet-play-btn {
+          width: 28px; height: 28px; border-radius: 50%;
+          border: 1px solid rgba(255,255,255,0.15);
+          background: rgba(255,255,255,0.05);
+          display: flex; align-items: center; justify-content: center;
+          cursor: pointer; transition: border-color 0.2s, background 0.2s;
+          flex-shrink: 0;
+        }
+        .dp-fleet-card:hover .dp-fleet-play-btn { border-color: rgba(200,16,46,0.5); background: rgba(200,16,46,0.08); }
+        .dp-fleet-play-icon {
+          width: 0; height: 0;
+          border-top: 5px solid transparent; border-bottom: 5px solid transparent;
+          border-left: 8px solid rgba(255,255,255,0.4);
+          margin-left: 2px; transition: border-left-color 0.2s;
+        }
+        .dp-fleet-pause-icon {
+          display: none; gap: 3px;
+        }
+        .dp-fleet-pause-icon span {
+          width: 2px; height: 9px; background: rgba(255,255,255,0.4);
+          border-radius: 1px; display: block;
+        }
+        .dp-fleet-card.playing .dp-fleet-play-icon { display: none; }
+        .dp-fleet-card.playing .dp-fleet-pause-icon { display: flex; }
+        .dp-fleet-card:hover .dp-fleet-play-icon { border-left-color: #c8102e; }
+        .dp-fleet-card:hover .dp-fleet-pause-icon span { background: #c8102e; }
+
+        /* video hint badge */
+        .dp-fleet-video-hint {
+          position: absolute; top: 16px; right: 16px; z-index: 3;
+          font-family: var(--mono); font-size: 7px; letter-spacing: 2px;
+          color: rgba(255,255,255,0.3); text-transform: uppercase;
+          border: 1px solid rgba(255,255,255,0.1); padding: 4px 8px;
+          background: rgba(0,0,0,0.3); backdrop-filter: blur(4px);
+          opacity: 1; transition: opacity 0.4s;
+        }
+        .dp-fleet-card.playing .dp-fleet-video-hint { opacity: 0; }
 
         /* ── CTA ── */
         .dp-cta { padding: 96px 64px; background: #ffffff; display: flex; align-items: center; justify-content: center; text-align: center; border-top: 1px solid #ebebeb; }
@@ -714,6 +897,7 @@ export default function DronePage() {
           .dp-tabs { flex-wrap: wrap; }
           .dp-fleet-grid { grid-template-columns: 1fr; }
           .dp-fleet-header { flex-direction: column; align-items: flex-start; gap: 8px; }
+          .dp-fleet-card { height: 420px; }
           .dp-fleet { padding: 72px 24px; }
           .dp-cta { padding: 72px 24px; }
           .modal-row { grid-template-columns: 1fr; }
@@ -821,7 +1005,11 @@ export default function DronePage() {
           </div>
         </section>
 
-       
+        {/* ── SPECS ── */}
+        <div className="dp-specs">
+          {SPECS.map((s, i) => <SpecCounter key={i} {...s} />)}
+        </div>
+
         {/* ── WHAT'S NEW SHOWCASE ── */}
         <ShowcaseSection openModal={openModal} />
 
@@ -866,27 +1054,7 @@ export default function DronePage() {
           </div>
           <div className="dp-fleet-grid">
             {FLEET.map((drone, i) => (
-              <motion.div key={i} className="dp-fleet-card" initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.3 }} transition={{ duration: 0.5, delay: i * 0.12 }}>
-                <div className="dp-fleet-card-accent"/>
-                <div className="dp-fleet-card-body">
-                  <div className="dp-fleet-card-num">0{i+1}</div>
-                  <div className="dp-fleet-name">{drone.name}</div>
-                  <div className="dp-fleet-role">{drone.role}</div>
-                  <p className="dp-fleet-desc">{drone.desc}</p>
-                </div>
-                <div className="dp-fleet-card-footer">
-                  <a
-                    className="dp-fleet-cta"
-                    href={drone.datasheet}
-                    download
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    ↓ Download Datasheet
-                  </a>
-                  <div className="dp-fleet-dot"/>
-                </div>
-              </motion.div>
+              <FleetCard key={i} drone={drone} index={i} />
             ))}
           </div>
         </section>
@@ -899,6 +1067,7 @@ export default function DronePage() {
             <p className="dp-cta-sub">Talk to our drone specialists and get a tailored proposal for your surveillance and operations needs.</p>
             <div className="dp-cta-actions">
               <button className="btn-primary" onClick={() => openModal()}>Book a Consultation</button>
+              <button className="dp-cta-ghost">Download Brochure</button>
             </div>
           </div>
         </section>
