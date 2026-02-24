@@ -349,52 +349,49 @@ function ShowcaseSection({ openModal }) {
 // ── FLEET CARD WITH VIDEO ─────────────────────────────────────
 function FleetCard({ drone, index }) {
   const videoRef = useRef(null);
-  const [playing, setPlaying] = useState(false);
+  const [ready, setReady] = useState(false);
 
-  const togglePlay = (e) => {
-    e.preventDefault();
+  useEffect(() => {
     const vid = videoRef.current;
     if (!vid) return;
-    if (playing) {
-      vid.pause();
-      setPlaying(false);
-    } else {
-      vid.play().then(() => setPlaying(true)).catch(() => {});
-    }
-  };
+    const onCanPlay = () => {
+      setReady(true);
+      vid.play().catch(() => {});
+    };
+    vid.addEventListener("canplaythrough", onCanPlay);
+    return () => vid.removeEventListener("canplaythrough", onCanPlay);
+  }, []);
 
   return (
     <motion.div
-      className={`dp-fleet-card${playing ? " playing" : ""}`}
+      className={`dp-fleet-card${ready ? " playing" : ""}`}
       initial={{ opacity: 0, y: 24 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.2 }}
       transition={{ duration: 0.6, delay: index * 0.12 }}
     >
-      {/* Idle dark bg */}
+      {/* Idle dark bg — fades out once video is ready */}
       <div className="dp-fleet-card-bg"/>
       <div className="dp-fleet-card-idle-num">0{index + 1}</div>
 
-      {/* Video */}
+      {/* Video — autoplay muted loop */}
       <video
         ref={videoRef}
         className="dp-fleet-video"
         src={drone.video}
+        autoPlay
         muted
         loop
         playsInline
-        preload="metadata"
+        preload="auto"
       />
 
       {/* Overlay gradient */}
       <div className="dp-fleet-card-overlay"/>
 
-      {/* Hover hint */}
-      <div className="dp-fleet-video-hint">▶ Play</div>
-
       {/* Content */}
       <div className="dp-fleet-card-content">
-        <div className="dp-fleet-card-num">0{index + 1} / 0{3}</div>
+        <div className="dp-fleet-card-num">0{index + 1} / 03</div>
         <div className="dp-fleet-name">{drone.name}</div>
         <div className="dp-fleet-role">{drone.role}</div>
         <p className="dp-fleet-desc">{drone.desc}</p>
@@ -405,20 +402,10 @@ function FleetCard({ drone, index }) {
             download
             target="_blank"
             rel="noopener noreferrer"
-            onClick={(e) => e.stopPropagation()}
           >
             ↓ Datasheet
           </a>
-          <button
-            className="dp-fleet-play-btn"
-            onClick={togglePlay}
-            aria-label={playing ? "Pause video" : "Play video"}
-          >
-            <div className="dp-fleet-play-icon"/>
-            <div className="dp-fleet-pause-icon">
-              <span/><span/>
-            </div>
-          </button>
+          <div className="dp-fleet-dot"/>
         </div>
       </div>
     </motion.div>
@@ -715,10 +702,9 @@ export default function DronePage() {
 
         .dp-fleet-card { position: relative; overflow: hidden; height: 500px; cursor: pointer; background: #0d1220; }
 
-        /* video */
-        .dp-fleet-video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center; opacity: 0; transition: opacity 0.7s ease; filter: saturate(0.7) brightness(0.5); }
+        .dp-fleet-video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center; opacity: 0; transition: opacity 1s ease; filter: saturate(0.75) brightness(0.55); }
         .dp-fleet-card.playing .dp-fleet-video { opacity: 1; }
-        .dp-fleet-card.playing:hover .dp-fleet-video { filter: saturate(1) brightness(0.65); }
+        .dp-fleet-card.playing:hover .dp-fleet-video { filter: saturate(1) brightness(0.7); transition: filter 0.6s ease; }
 
         /* idle state: dark gradient bg */
         .dp-fleet-card-bg {
@@ -791,44 +777,8 @@ export default function DronePage() {
         }
         .dp-fleet-card:hover .dp-fleet-cta { color: #c8102e; }
 
-        /* play/pause indicator */
-        .dp-fleet-play-btn {
-          width: 28px; height: 28px; border-radius: 50%;
-          border: 1px solid rgba(255,255,255,0.15);
-          background: rgba(255,255,255,0.05);
-          display: flex; align-items: center; justify-content: center;
-          cursor: pointer; transition: border-color 0.2s, background 0.2s;
-          flex-shrink: 0;
-        }
-        .dp-fleet-card:hover .dp-fleet-play-btn { border-color: rgba(200,16,46,0.5); background: rgba(200,16,46,0.08); }
-        .dp-fleet-play-icon {
-          width: 0; height: 0;
-          border-top: 5px solid transparent; border-bottom: 5px solid transparent;
-          border-left: 8px solid rgba(255,255,255,0.4);
-          margin-left: 2px; transition: border-left-color 0.2s;
-        }
-        .dp-fleet-pause-icon {
-          display: none; gap: 3px;
-        }
-        .dp-fleet-pause-icon span {
-          width: 2px; height: 9px; background: rgba(255,255,255,0.4);
-          border-radius: 1px; display: block;
-        }
-        .dp-fleet-card.playing .dp-fleet-play-icon { display: none; }
-        .dp-fleet-card.playing .dp-fleet-pause-icon { display: flex; }
-        .dp-fleet-card:hover .dp-fleet-play-icon { border-left-color: #c8102e; }
-        .dp-fleet-card:hover .dp-fleet-pause-icon span { background: #c8102e; }
-
-        /* video hint badge */
-        .dp-fleet-video-hint {
-          position: absolute; top: 16px; right: 16px; z-index: 3;
-          font-family: var(--mono); font-size: 7px; letter-spacing: 2px;
-          color: rgba(255,255,255,0.3); text-transform: uppercase;
-          border: 1px solid rgba(255,255,255,0.1); padding: 4px 8px;
-          background: rgba(0,0,0,0.3); backdrop-filter: blur(4px);
-          opacity: 1; transition: opacity 0.4s;
-        }
-        .dp-fleet-card.playing .dp-fleet-video-hint { opacity: 0; }
+        .dp-fleet-dot { width: 6px; height: 6px; border-radius: 50%; background: rgba(255,255,255,0.2); transition: background 0.3s; }
+        .dp-fleet-card:hover .dp-fleet-dot { background: #c8102e; }
 
         /* ── CTA ── */
         .dp-cta { padding: 96px 64px; background: #ffffff; display: flex; align-items: center; justify-content: center; text-align: center; border-top: 1px solid #ebebeb; }
@@ -1005,10 +955,7 @@ export default function DronePage() {
           </div>
         </section>
 
-        {/* ── SPECS ── */}
-        <div className="dp-specs">
-          {SPECS.map((s, i) => <SpecCounter key={i} {...s} />)}
-        </div>
+        
 
         {/* ── WHAT'S NEW SHOWCASE ── */}
         <ShowcaseSection openModal={openModal} />
@@ -1067,7 +1014,6 @@ export default function DronePage() {
             <p className="dp-cta-sub">Talk to our drone specialists and get a tailored proposal for your surveillance and operations needs.</p>
             <div className="dp-cta-actions">
               <button className="btn-primary" onClick={() => openModal()}>Book a Consultation</button>
-              <button className="dp-cta-ghost">Download Brochure</button>
             </div>
           </div>
         </section>
