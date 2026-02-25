@@ -1,5 +1,7 @@
-import { useState, useRef, useEffect, useMemo } from "react";
-import { motion, useMotionValue, useAnimationFrame, useTransform } from "motion/react";
+import { useState, useRef, useEffect, useMemo, useCallback } from "react";
+import { motion, useMotionValue, useAnimationFrame, useTransform, AnimatePresence } from "motion/react";
+import { useNavigate } from "react-router-dom";
+import samamLogo from "../assets/samam.png";
 
 // ── SHINY TEXT (reused from site) ────────────────────────────
 function ShinyText({ text, speed = 2, color = '#b5b5b5', shineColor = '#ffffff', spread = 120 }) {
@@ -170,9 +172,63 @@ function PartnerCard({ partner, index }) {
   );
 }
 
+
+// ── VALUES CAROUSEL ───────────────────────────────────────────
+function ValuesCarousel({ activeValue, setActiveValue }) {
+  const INTERVAL = 4000;
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setActiveValue(v => (v + 1) % VALUES.length);
+    }, INTERVAL);
+    return () => clearInterval(timer);
+  }, [setActiveValue]);
+
+  return (
+    <div className="ap-values-layout">
+      {/* Left nav */}
+      <div className="ap-values-nav">
+        {VALUES.map((v, i) => (
+          <div
+            key={i}
+            className={`ap-values-nav-item${activeValue === i ? " active" : ""}`}
+            onClick={() => setActiveValue(i)}
+          >
+            <div className="ap-values-nav-num">{v.num}</div>
+            <div className="ap-values-nav-title">{v.title}</div>
+            <div className="ap-val-fill"/>
+          </div>
+        ))}
+      </div>
+
+      {/* Right panel */}
+      <div className="ap-values-panel">
+        {VALUES.map((v, i) => (
+          <div key={i} className={`ap-values-slide${activeValue === i ? " active" : ""}`}>
+            <div className="ap-val-big-num">{v.num}</div>
+            <div className="ap-val-tag">{v.title}</div>
+            <div className="ap-val-heading">{v.title}</div>
+            <p className="ap-val-desc">{v.desc}</p>
+            <div className="ap-val-dots">
+              {VALUES.map((_, j) => (
+                <button
+                  key={j}
+                  className={`ap-val-dot${activeValue === j ? " active" : ""}`}
+                  onClick={() => setActiveValue(j)}
+                />
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 // ── PAGE ─────────────────────────────────────────────────────
 export default function AboutPage() {
   const [activeValue, setActiveValue] = useState(0);
+  const navigate = useNavigate();
 
   return (
     <>
@@ -181,57 +237,98 @@ export default function AboutPage() {
 
         /* ── HERO ── */
         .ap-hero {
-          min-height: 80vh; background: #0a0f1a; position: relative;
+          min-height: 100vh; background: #060a12; position: relative;
           display: flex; flex-direction: column; justify-content: flex-end;
           padding: 0 64px 96px; overflow: hidden;
         }
+        /* animated grid */
         .ap-hero-grid {
-          position: absolute; inset: 0;
+          position: absolute; inset: 0; z-index: 1;
           background:
-            linear-gradient(rgba(200,16,46,0.025) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(200,16,46,0.025) 1px, transparent 1px);
-          background-size: 64px 64px;
-          animation: apGrid 24s linear infinite;
+            linear-gradient(rgba(200,16,46,0.03) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(200,16,46,0.03) 1px, transparent 1px);
+          background-size: 72px 72px;
+          animation: apGrid 28s linear infinite;
         }
-        @keyframes apGrid { to { background-position: 64px 64px; } }
+        @keyframes apGrid { to { background-position: 72px 72px; } }
+
+        /* logo full-bleed bg */
+        .ap-hero-logo-bg {
+          position: absolute; inset: 0; z-index: 2;
+          display: flex; align-items: center; justify-content: center;
+          pointer-events: none; user-select: none;
+          overflow: hidden;
+        }
+        .ap-hero-logo-bg img {
+          width: 100%; height: 100%;
+          object-fit: cover; object-position: center;
+          opacity: 0.07;
+          filter: grayscale(1) brightness(2.5) contrast(1.2);
+          transform: scale(1.05);
+          animation: logoBreath 10s ease-in-out infinite;
+        }
+        @keyframes logoBreath {
+          0%,100% { transform: scale(1.05); opacity: 0.07; }
+          50%      { transform: scale(1.08); opacity: 0.10; }
+        }
+
+        /* red glow orb bottom-left */
+        .ap-hero-orb {
+          position: absolute; z-index: 2;
+          width: 600px; height: 600px; border-radius: 50%;
+          background: radial-gradient(ellipse, rgba(200,16,46,0.12) 0%, transparent 70%);
+          bottom: -200px; left: -100px; pointer-events: none;
+        }
+
+        /* top progress line */
+        .ap-hero-top-line {
+          position: absolute; top: 0; left: 0; right: 0; z-index: 5;
+          height: 2px;
+          background: linear-gradient(to right, transparent, #c8102e 30%, #c8102e 70%, transparent);
+          opacity: 0.6;
+        }
+
+        /* vignette */
         .ap-hero-vignette {
-          position: absolute; inset: 0;
-          background: radial-gradient(ellipse at 20% 80%, rgba(200,16,46,0.06) 0%, transparent 60%),
-                      linear-gradient(to top, rgba(10,15,26,0.98) 0%, transparent 60%);
+          position: absolute; inset: 0; z-index: 3;
+          background:
+            linear-gradient(to right, rgba(6,10,18,0.9) 0%, rgba(6,10,18,0.3) 60%, rgba(6,10,18,0.1) 100%),
+            linear-gradient(to top, rgba(6,10,18,1) 0%, rgba(6,10,18,0.4) 40%, transparent 70%);
         }
-        .ap-hero-year {
-          position: absolute; top: 64px; right: 64px;
-          font-family: var(--display); font-size: 200px; letter-spacing: -8px;
-          color: rgba(255,255,255,0.02); line-height: 1; pointer-events: none;
-          user-select: none;
-        }
-        .ap-hero-content { position: relative; z-index: 2; }
+
+        /* content */
+        .ap-hero-content { position: relative; z-index: 4; }
         .ap-hero-eyebrow {
           font-family: var(--mono); font-size: 9px; letter-spacing: 5px;
-          color: #c8102e; text-transform: uppercase; margin-bottom: 24px;
+          color: #c8102e; text-transform: uppercase; margin-bottom: 28px;
           display: flex; align-items: center; gap: 14px;
         }
         .ap-hero-eyebrow::before { content: ''; width: 28px; height: 1px; background: #c8102e; display: block; }
         .ap-hero-title {
-          font-family: var(--display); font-size: clamp(48px, 8vw, 110px);
-          line-height: 0.88; letter-spacing: 1px; color: #f0f0f0; margin-bottom: 40px;
+          font-family: var(--display); font-size: clamp(56px, 9vw, 128px);
+          line-height: 0.85; letter-spacing: 1px; color: #f0f0f0; margin-bottom: 44px;
         }
-        .ap-hero-title .outline { color: transparent; -webkit-text-stroke: 1px rgba(240,240,240,0.2); }
+        .ap-hero-title .outline { color: transparent; -webkit-text-stroke: 1px rgba(240,240,240,0.18); }
         .ap-hero-desc {
-          font-size: 15px; font-weight: 300; color: rgba(255,255,255,0.4);
-          max-width: 560px; line-height: 1.9;
+          font-size: 15px; font-weight: 300; color: rgba(255,255,255,0.38);
+          max-width: 540px; line-height: 2;
         }
-        .ap-hero-scroll {
-          position: absolute; bottom: 40px; right: 64px; z-index: 2;
-          display: flex; align-items: center; gap: 12px;
-          font-family: var(--mono); font-size: 8px; letter-spacing: 3px;
-          color: rgba(255,255,255,0.2); text-transform: uppercase;
+
+        /* right-side badge panel */
+        .ap-hero-badge {
+          position: absolute; right: 64px; bottom: 96px; z-index: 4;
+          width: 220px; border-left: 1px solid rgba(200,16,46,0.35);
+          padding-left: 20px;
         }
-        .ap-hero-scroll-line {
-          width: 1px; height: 40px; background: linear-gradient(to bottom, transparent, rgba(200,16,46,0.5));
-          animation: scrollPulse 2s ease-in-out infinite;
+        .ap-hero-badge-label {
+          font-family: var(--mono); font-size: 7px; letter-spacing: 3px;
+          color: rgba(255,255,255,0.2); text-transform: uppercase; margin-bottom: 8px;
         }
-        @keyframes scrollPulse { 0%,100% { opacity: 0.4; } 50% { opacity: 1; } }
+        .ap-hero-badge-value {
+          font-family: var(--display); font-size: 13px; letter-spacing: 2px;
+          color: rgba(255,255,255,0.55); margin-bottom: 16px; line-height: 1.3;
+        }
+        .ap-hero-badge-divider { width: 100%; height: 1px; background: rgba(255,255,255,0.05); margin-bottom: 16px; }
 
         /* ── MISSION STRIP ── */
         .ap-mission {
@@ -407,46 +504,97 @@ export default function AboutPage() {
         .ap-partner-bio { font-size: 13px; color: rgba(255,255,255,0.35); line-height: 1.8; font-weight: 300; }
 
         /* ── VALUES ── */
-        .ap-values { padding: 104px 64px; background: #fff; border-top: 1px solid #ebebeb; }
-        .ap-values-header { margin-bottom: 72px; }
+        .ap-values { padding: 104px 64px; background: #0a0f1a; border-top: 1px solid rgba(255,255,255,0.04); overflow: hidden; }
+        .ap-values-header { margin-bottom: 72px; display: flex; align-items: flex-end; justify-content: space-between; }
         .ap-values-eyebrow {
           font-family: var(--mono); font-size: 9px; letter-spacing: 4px;
           color: #c8102e; text-transform: uppercase; margin-bottom: 16px;
           display: flex; align-items: center; gap: 10px;
         }
         .ap-values-eyebrow::before { content: ''; width: 20px; height: 1px; background: #c8102e; display: block; }
-        .ap-values-title {
-          font-family: var(--display); font-size: clamp(28px, 3vw, 44px);
-          letter-spacing: 1px; color: #111;
+        .ap-values-title { font-family: var(--display); font-size: clamp(28px, 3vw, 44px); letter-spacing: 1px; color: #f0f0f0; }
+        .ap-values-counter { font-family: var(--mono); font-size: 10px; letter-spacing: 2px; color: rgba(255,255,255,0.2); text-transform: uppercase; }
+
+        /* main layout */
+        .ap-values-layout { display: grid; grid-template-columns: 280px 1fr; gap: 0; min-height: 420px; }
+
+        /* left nav tabs */
+        .ap-values-nav { display: flex; flex-direction: column; border-right: 1px solid rgba(255,255,255,0.06); }
+        .ap-values-nav-item {
+          padding: 28px 32px; border-bottom: 1px solid rgba(255,255,255,0.04);
+          cursor: pointer; position: relative; overflow: hidden;
+          transition: background 0.3s;
         }
-        .ap-values-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; }
-        .ap-value-item {
-          padding: 48px 44px; border: 1px solid #ebebeb;
-          cursor: pointer; transition: background 0.25s, box-shadow 0.25s;
-          position: relative; overflow: hidden;
+        .ap-values-nav-item:last-child { border-bottom: none; }
+        .ap-values-nav-item:hover { background: rgba(255,255,255,0.02); }
+        .ap-values-nav-item.active { background: rgba(200,16,46,0.06); }
+        /* progress fill */
+        .ap-values-nav-item .ap-val-fill {
+          position: absolute; bottom: 0; left: 0; height: 1px;
+          background: #c8102e; width: 0%;
         }
-        .ap-value-item:hover { background: #fafafa; }
-        .ap-value-item.active { background: #0a0f1a; }
-        .ap-value-item::after {
-          content: ''; position: absolute; bottom: 0; left: 0;
-          width: 0; height: 2px; background: #c8102e;
-          transition: width 0.4s ease;
-        }
-        .ap-value-item:hover::after, .ap-value-item.active::after { width: 100%; }
-        .ap-value-num {
-          font-family: var(--display); font-size: 56px; letter-spacing: 2px;
-          color: #f5f5f5; line-height: 1; margin-bottom: -4px;
+        .ap-values-nav-item.active .ap-val-fill { animation: valFill 4s linear forwards; }
+        @keyframes valFill { from { width: 0%; } to { width: 100%; } }
+        .ap-values-nav-num {
+          font-family: var(--mono); font-size: 8px; letter-spacing: 3px;
+          color: rgba(255,255,255,0.2); text-transform: uppercase; margin-bottom: 8px;
           transition: color 0.3s;
         }
-        .ap-value-item.active .ap-value-num { color: rgba(255,255,255,0.06); }
-        .ap-value-title {
-          font-family: var(--display); font-size: clamp(22px, 2vw, 30px);
-          letter-spacing: 2px; color: #111; margin-bottom: 16px; line-height: 1;
-          transition: color 0.3s;
+        .ap-values-nav-item.active .ap-values-nav-num { color: #c8102e; }
+        .ap-values-nav-title {
+          font-family: var(--display); font-size: 16px; letter-spacing: 2px;
+          color: rgba(255,255,255,0.3); transition: color 0.3s;
         }
-        .ap-value-item.active .ap-value-title { color: #f0f0f0; }
-        .ap-value-desc { font-size: 13px; color: #777; line-height: 1.8; font-weight: 300; transition: color 0.3s; }
-        .ap-value-item.active .ap-value-desc { color: rgba(255,255,255,0.4); }
+        .ap-values-nav-item.active .ap-values-nav-title,
+        .ap-values-nav-item:hover .ap-values-nav-title { color: #f0f0f0; }
+
+        /* right panel */
+        .ap-values-panel { position: relative; overflow: hidden; }
+        .ap-values-slide {
+          position: absolute; inset: 0;
+          padding: 56px 64px;
+          display: flex; flex-direction: column; justify-content: center;
+          opacity: 0; transform: translateY(24px);
+          transition: opacity 0.55s ease, transform 0.55s ease;
+          pointer-events: none;
+        }
+        .ap-values-slide.active {
+          opacity: 1; transform: translateY(0); pointer-events: auto;
+          position: relative;
+        }
+        .ap-val-big-num {
+          font-family: var(--display); font-size: 180px; letter-spacing: -4px;
+          color: rgba(255,255,255,0.03); line-height: 1;
+          position: absolute; right: 32px; bottom: -16px; pointer-events: none;
+        }
+        .ap-val-tag {
+          font-family: var(--mono); font-size: 8px; letter-spacing: 4px;
+          color: #c8102e; text-transform: uppercase; margin-bottom: 24px;
+          display: flex; align-items: center; gap: 12px;
+        }
+        .ap-val-tag::before { content: ''; width: 24px; height: 1px; background: #c8102e; display: block; }
+        .ap-val-heading {
+          font-family: var(--display); font-size: clamp(36px, 4vw, 64px);
+          letter-spacing: 2px; color: #f0f0f0; line-height: 0.95;
+          margin-bottom: 32px;
+        }
+        .ap-val-desc {
+          font-size: 15px; color: rgba(255,255,255,0.4); line-height: 1.9;
+          font-weight: 300; max-width: 480px;
+        }
+        .ap-val-dots {
+          display: flex; gap: 8px; margin-top: 48px;
+        }
+        .ap-val-dot {
+          width: 24px; height: 2px; background: rgba(255,255,255,0.1);
+          position: relative; overflow: hidden; cursor: pointer; border: none; padding: 0;
+          transition: background 0.3s;
+        }
+        .ap-val-dot.active { background: rgba(255,255,255,0.15); }
+        .ap-val-dot.active::after {
+          content: ''; position: absolute; inset: 0;
+          background: #c8102e; animation: valFill 4s linear forwards;
+        }
 
         /* ── CLIENTS STRIP ── */
         .ap-clients { padding: 80px 64px; background: #f7f8f9; border-top: 1px solid #ebebeb; }
@@ -497,12 +645,23 @@ export default function AboutPage() {
         }
         .ap-ghost-btn:hover { border-color: #111; color: #111; }
 
+
         /* ── RESPONSIVE ── */
         @media (max-width: 1024px) {
           .ap-intro { grid-template-columns: 1fr; gap: 48px; }
           .ap-values-layout { grid-template-columns: 1fr; }
+          .ap-values-nav { flex-direction: row; border-right: none; border-bottom: 1px solid rgba(255,255,255,0.06); overflow-x: auto; }
+          .ap-values-nav-item { border-bottom: none; border-right: 1px solid rgba(255,255,255,0.04); padding: 20px 24px; min-width: 140px; }
+          .ap-values-slide { position: relative; padding: 40px 24px; }
+          .ap-values-slide.active { position: relative; }
+        }
+        @media (max-width: 700px) {
+          .cm-box { grid-template-columns: 1fr; max-height: 95vh; }
+          .cm-accent { display: none; }
+          .cm-row { grid-template-columns: 1fr; }
         }
         @media (max-width: 900px) {
+          .ap-hero-badge { display: none; }
           .ap-hero { padding: 0 24px 72px; min-height: 60vh; }
           .ap-hero-year { font-size: 100px; top: 24px; right: 24px; }
           .ap-hero-scroll { display: none; }
@@ -536,10 +695,18 @@ export default function AboutPage() {
 
         {/* ── HERO ── */}
         <section className="ap-hero">
+          <div className="ap-hero-top-line"/>
           <div className="ap-hero-grid"/>
-          <div className="ap-hero-vignette"/>
-          <div className="ap-hero-year">2014</div>
+          <div className="ap-hero-orb"/>
 
+          {/* Logo watermark */}
+          <div className="ap-hero-logo-bg">
+            <img src={samamLogo} alt="" aria-hidden="true"/>
+          </div>
+
+          <div className="ap-hero-vignette"/>
+
+          {/* Main content */}
           <div className="ap-hero-content">
             <motion.p className="ap-hero-eyebrow"
               initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.6 }}>
@@ -558,10 +725,18 @@ export default function AboutPage() {
             </motion.p>
           </div>
 
-          <div className="ap-hero-scroll">
-            <div className="ap-hero-scroll-line"/>
-            Scroll
-          </div>
+          {/* Right badge */}
+          <motion.div className="ap-hero-badge"
+            initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.7, delay: 0.4 }}>
+            <div className="ap-hero-badge-label">Headquarters</div>
+            <div className="ap-hero-badge-value">Al Sadd, Doha<br/>State of Qatar</div>
+            <div className="ap-hero-badge-divider"/>
+            <div className="ap-hero-badge-label">Founded</div>
+            <div className="ap-hero-badge-value">2014</div>
+            <div className="ap-hero-badge-divider"/>
+            <div className="ap-hero-badge-label">DJI Partner</div>
+            <div className="ap-hero-badge-value">Authorized Enterprise<br/>Distributor — Qatar</div>
+          </motion.div>
         </section>
 
         {/* ── MISSION / VISION / VALUES STRIP ── */}
@@ -670,22 +845,18 @@ export default function AboutPage() {
         {/* ── VALUES ── */}
         <section className="ap-values">
           <div className="ap-values-header">
-            <p className="ap-values-eyebrow">Core Values</p>
-            <h2 className="ap-values-title">What Drives Us</h2>
+            <div>
+              <p className="ap-values-eyebrow">Core Values</p>
+              <h2 className="ap-values-title">What Drives Us</h2>
+            </div>
+            <div className="ap-values-counter">
+              <span style={{color:'rgba(255,255,255,0.5)'}}>{String(activeValue + 1).padStart(2,'0')}</span>
+              {" / "}
+              {String(VALUES.length).padStart(2,'0')}
+            </div>
           </div>
-          <div className="ap-values-layout">
-            {VALUES.map((v, i) => (
-              <motion.div key={i}
-                className={`ap-value-item${activeValue === i ? " active" : ""}`}
-                onClick={() => setActiveValue(i)}
-                initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, amount: 0.2 }} transition={{ duration: 0.5, delay: i * 0.1 }}>
-                <div className="ap-value-num">{v.num}</div>
-                <div className="ap-value-title">{v.title}</div>
-                <p className="ap-value-desc">{v.desc}</p>
-              </motion.div>
-            ))}
-          </div>
+
+          <ValuesCarousel activeValue={activeValue} setActiveValue={setActiveValue} />
         </section>
 
         {/* ── CLIENTS ── */}
@@ -709,7 +880,7 @@ export default function AboutPage() {
               Whether you need enterprise drones, integrated security systems, or a trusted manpower partner in Qatar — SAMAM is ready to deliver.
             </p>
             <div className="ap-cta-actions">
-              <button className="btn-primary">Get in Touch</button>
+              <button className="btn-primary" onClick={() => navigate("/contact")}>Get in Touch</button>
               <button className="ap-ghost-btn">View Services</button>
             </div>
           </div>
