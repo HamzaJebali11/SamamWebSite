@@ -254,7 +254,7 @@ const SPECS = [
 //   /public/datasheets/flycart-100-datasheet.pdf
 const FLEET = [
   { name: "Matrice 400", role: "Heavy Surveillance", desc: "Long-range enterprise platform with multi-sensor payload, 55-min flight time, and 15km transmission range.", datasheet: "/datasheets/matrice-400-datasheet.pdf", video: "/videos/matrice-400.mp4" },
-  { name: "Matrice 4T", role: "Thermal & Visual", desc: "Quad-sensor payload with 4K visual + radiometric thermal. Engineered for perimeter security and night operations.", datasheet: "/datasheets/matrice-4t-datasheet.pdf", video: "/videos/matrice-4t.mp4" },
+  { name: "Matrice 4/4T", role: "Thermal & Visual", desc: "Quad-sensor payload with 4K visual + radiometric thermal. Engineered for perimeter security and night operations.", datasheet: "/datasheets/matrice-4t-datasheet.pdf", video: "/videos/matrice-4t.mp4" },
   { name: "FlyCart 100", role: "Cargo & Delivery", desc: "Heavy-lift delivery drone rated for 100kg payload. Ideal for logistics, emergency response, and remote resupply.", datasheet: "/datasheets/flycart-100-datasheet.pdf", video: "/videos/flycart-100.mp4" },
 ];
 
