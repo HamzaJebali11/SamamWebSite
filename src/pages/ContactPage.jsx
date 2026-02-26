@@ -13,55 +13,34 @@ const REASONS = [
     num: "01",
     title: "24 / 7 Response",
     desc: "Our team is available around the clock for emergencies. Critical security situations don't wait — and neither do we.",
-    icon: (
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-        <circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>
-      </svg>
-    ),
+    icon: (<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>),
   },
   {
     num: "02",
     title: "DJI Enterprise Certified",
     desc: "Authorized DJI Enterprise distributor in Qatar. Get expert advice on the right drone for your mission — direct from the source.",
-    icon: (
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-      </svg>
-    ),
+    icon: (<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>),
   },
   {
     num: "03",
     title: "Local Qatari Expertise",
     desc: "Owned and operated by Qatari nationals since 2014. We know the market, regulations, and terrain better than anyone.",
-    icon: (
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-        <path d="M12 22s-8-4.5-8-11.8A8 8 0 0112 2a8 8 0 018 8.2c0 7.3-8 11.8-8 11.8z"/><circle cx="12" cy="10" r="3"/>
-      </svg>
-    ),
+    icon: (<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M12 22s-8-4.5-8-11.8A8 8 0 0112 2a8 8 0 018 8.2c0 7.3-8 11.8-8 11.8z"/><circle cx="12" cy="10" r="3"/></svg>),
   },
   {
     num: "04",
     title: "Full-Spectrum Services",
     desc: "From CCTV and access control to drone surveys and manpower — one partner for every security need across Qatar.",
-    icon: (
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-        <rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/>
-      </svg>
-    ),
+    icon: (<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>),
   },
   {
     num: "05",
     title: "Fast Delivery & AMC",
     desc: "We don't just sell — we install, commission, train, and maintain. Annual maintenance contracts ensure your systems stay mission-ready.",
-    icon: (
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-        <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
-      </svg>
-    ),
+    icon: (<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>),
   },
 ];
 
-// ── COUNT-UP HOOK ─────────────────────────────────────────────
 function useCountUp(target, duration = 1800, active = false) {
   const [val, setVal] = useState(0);
   useEffect(() => {
@@ -79,7 +58,6 @@ function useCountUp(target, duration = 1800, active = false) {
   return val;
 }
 
-// ── STAT ITEM ─────────────────────────────────────────────────
 function StatItem({ value, suffix, label, delay, active }) {
   const num = useCountUp(parseInt(value), 1600, active);
   return (
@@ -92,7 +70,6 @@ function StatItem({ value, suffix, label, delay, active }) {
   );
 }
 
-// ── MAP MODAL ─────────────────────────────────────────────────
 function MapModal({ onClose }) {
   useEffect(() => {
     const h = (e) => { if (e.key === "Escape") onClose(); };
@@ -135,7 +112,6 @@ function MapModal({ onClose }) {
   );
 }
 
-// ── CONTACT PAGE ──────────────────────────────────────────────
 export default function ContactPage() {
   const [form,    setForm]    = useState({ from_name:"", from_email:"", phone:"", subject:"", message:"" });
   const [status,  setStatus]  = useState("idle");
@@ -172,11 +148,24 @@ export default function ContactPage() {
       <style>{`
         .contact-page { background: #060a12; min-height: 100vh; font-family: var(--body, sans-serif); }
 
+
+        /* ── SECTION SEPARATORS ── */
+        .cp-section-sep {
+          height: 1px;
+          background: linear-gradient(to right, transparent, rgba(255,255,255,0.06) 20%, rgba(255,255,255,0.06) 80%, transparent);
+          position: relative; z-index: 3;
+          box-shadow: 0 1px 12px rgba(0,0,0,0.25);
+        }
+
         /* ── HERO ── */
         .cp-hero {
-          min-height: 52vh; display: flex; flex-direction: column; justify-content: flex-end;
-          padding: 0 72px 72px; position: relative; overflow: hidden;
+          min-height: 56vh;
+          display: flex; flex-direction: column; justify-content: flex-end;
+          padding: 120px 72px 72px;
+          position: relative; overflow: hidden;
           background: #060a12;
+          box-shadow: 0 8px 40px rgba(0,0,0,0.4);
+          z-index: 2;
         }
         .cp-hero-grid {
           position: absolute; inset: 0;
@@ -187,30 +176,40 @@ export default function ContactPage() {
         @keyframes cpGrid { to { background-position: 64px 64px; } }
         .cp-hero-top-line {
           position: absolute; top:0; left:0; right:0; height:2px;
-          background: linear-gradient(to right,transparent,#c8102e 30%,#c8102e 70%,transparent); opacity:0.55;
+          background: linear-gradient(to right,transparent,#c8102e 30%,#c8102e 70%,transparent);
+          opacity:0.55;
         }
         .cp-hero-orb {
-          position: absolute; width:700px; height:700px; border-radius:50%;
-          background: radial-gradient(ellipse,rgba(200,16,46,0.06) 0%,transparent 65%);
-          bottom:-300px; right:-100px; pointer-events:none;
+          position: absolute; width:600px; height:600px; border-radius:50%;
+          background: radial-gradient(ellipse,rgba(200,16,46,0.05) 0%,transparent 65%);
+          bottom:-250px; right:-80px; pointer-events:none;
         }
         .cp-hero-content { position:relative; z-index:2; max-width:900px; }
         .cp-hero-eyebrow {
           font-family: var(--mono); font-size:9px; letter-spacing:5px; color:#c8102e;
-          text-transform:uppercase; margin-bottom:24px; display:flex; align-items:center; gap:14px;
+          text-transform:uppercase; margin-bottom:24px;
+          display:flex; align-items:center; gap:14px;
         }
         .cp-hero-eyebrow::before { content:''; width:28px; height:1px; background:#c8102e; display:block; }
         .cp-hero-title {
           font-family: var(--display); font-size: clamp(56px,9vw,130px);
           line-height: 0.85; letter-spacing: 1px; color: #f0f0f0; margin-bottom: 36px;
         }
-        .cp-hero-title .outline { color:transparent; -webkit-text-stroke:1px rgba(240,240,240,0.15); }
+        .cp-hero-title .outline {
+          color:transparent; -webkit-text-stroke:1px rgba(240,240,240,0.15);
+        }
         .cp-hero-meta {
           display: flex; align-items: center; gap: 40px;
           border-top: 1px solid rgba(255,255,255,0.07); padding-top: 28px;
         }
-        .cp-hero-meta-item { font-family:var(--mono); font-size:9px; letter-spacing:2px; color:rgba(255,255,255,0.25); text-transform:uppercase; }
-        .cp-hero-meta-item strong { display:block; font-family:var(--mono); font-size:13px; color:rgba(255,255,255,0.6); letter-spacing:1px; margin-bottom:4px; font-weight:400; }
+        .cp-hero-meta-item {
+          font-family:var(--mono); font-size:9px; letter-spacing:2px;
+          color:rgba(255,255,255,0.25); text-transform:uppercase;
+        }
+        .cp-hero-meta-item strong {
+          display:block; font-family:var(--mono); font-size:13px;
+          color:rgba(255,255,255,0.6); letter-spacing:1px; margin-bottom:4px; font-weight:400;
+        }
         .cp-hero-meta-sep { width:1px; height:32px; background:rgba(255,255,255,0.08); }
 
         /* ── STATS BAR ── */
@@ -219,6 +218,8 @@ export default function ContactPage() {
           border-top: 1px solid rgba(255,255,255,0.05);
           border-bottom: 1px solid rgba(255,255,255,0.05);
           background: #08111f;
+          box-shadow: 0 4px 24px rgba(0,0,0,0.3), 0 -4px 24px rgba(0,0,0,0.2);
+          position: relative; z-index: 1;
         }
         .cp-stat {
           padding: 36px 40px; border-right: 1px solid rgba(255,255,255,0.05);
@@ -228,17 +229,19 @@ export default function ContactPage() {
         .cp-stat::before {
           content:''; position:absolute; top:0; left:0; right:0; height:2px;
           background: linear-gradient(to right,#c8102e,transparent);
-          transform: scaleX(0); transform-origin:left;
-          transition: transform 0.6s ease;
+          transform: scaleX(0); transform-origin:left; transition: transform 0.6s ease;
         }
         .cp-stat:hover::before { transform: scaleX(1); }
         .cp-stat-val {
           font-family: var(--display); font-size: clamp(36px,4vw,52px);
           color: #f0f0f0; letter-spacing: 2px; line-height: 1; margin-bottom: 8px;
         }
-        .cp-stat-label { font-family:var(--mono); font-size:8px; letter-spacing:3px; color:rgba(255,255,255,0.22); text-transform:uppercase; }
+        .cp-stat-label {
+          font-family:var(--mono); font-size:8px; letter-spacing:3px;
+          color:rgba(255,255,255,0.25); text-transform:uppercase;
+        }
 
-        /* ── MAIN BODY ── */
+        /* ── BODY ── */
         .cp-body {
           display: grid; grid-template-columns: 1fr 1fr;
           border-top: 1px solid rgba(255,255,255,0.04);
@@ -249,6 +252,7 @@ export default function ContactPage() {
           background: #070d18; padding: 72px 64px;
           border-right: 1px solid rgba(255,255,255,0.05);
           position: relative; overflow: hidden;
+          box-shadow: inset -1px 0 0 rgba(255,255,255,0.03), 4px 0 20px rgba(0,0,0,0.3);
         }
         .cp-why-bg-num {
           position: absolute; right: -20px; bottom: -40px;
@@ -267,7 +271,7 @@ export default function ContactPage() {
         .cp-reasons { display:flex; flex-direction:column; gap:2px; }
         .cp-reason {
           display:grid; grid-template-columns:48px 1fr;
-          gap:0; padding:22px 0; border-bottom:1px solid rgba(255,255,255,0.045);
+          padding:22px 0; border-bottom:1px solid rgba(255,255,255,0.045);
           position:relative; overflow:hidden; cursor:default;
           transition: background 0.25s;
         }
@@ -279,14 +283,15 @@ export default function ContactPage() {
         }
         .cp-reason:hover { background: rgba(255,255,255,0.02); }
         .cp-reason:hover::before { transform:scaleY(1); }
-        .cp-reason-left { display:flex; flex-direction:column; align-items:center; padding-top:4px; gap:12px; }
+        .cp-reason-left {
+          display:flex; flex-direction:column; align-items:center;
+          padding-top:4px; gap:12px;
+        }
         .cp-reason-num {
           font-family:var(--mono); font-size:7px; letter-spacing:2px;
-          color:rgba(200,16,46,0.45); text-transform:uppercase;
+          color:rgba(200,16,46,0.5); text-transform:uppercase;
         }
-        .cp-reason-icon {
-          color:rgba(200,16,46,0.5); transition:color 0.25s;
-        }
+        .cp-reason-icon { color:rgba(200,16,46,0.45); transition:color 0.25s; }
         .cp-reason:hover .cp-reason-icon { color:#c8102e; }
         .cp-reason-body { padding-left:16px; }
         .cp-reason-title {
@@ -301,33 +306,39 @@ export default function ContactPage() {
         }
         .cp-reason:hover .cp-reason-desc { color:rgba(255,255,255,0.45); }
 
-        /* response-time badge */
         .cp-response-badge {
           margin-top:40px; padding:18px 22px;
           border:1px solid rgba(200,16,46,0.2);
-          background:rgba(200,16,46,0.05);
+          background:rgba(200,16,46,0.04);
           display:flex; align-items:center; gap:16px;
         }
         .cp-response-dot {
           width:8px; height:8px; border-radius:50%; background:#c8102e; flex-shrink:0;
           animation: pulseDot 1.6s ease-in-out infinite;
         }
-        @keyframes pulseDot { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.4;transform:scale(1.5)} }
-        .cp-response-text { font-family:var(--mono); font-size:9px; letter-spacing:2px; color:rgba(200,16,46,0.7); text-transform:uppercase; }
+        @keyframes pulseDot { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.55;transform:scale(1.5)} }
+        .cp-response-text {
+          font-family:var(--mono); font-size:9px; letter-spacing:2px;
+          color:rgba(200,16,46,0.7); text-transform:uppercase;
+        }
         .cp-response-text strong { color:#c8102e; }
 
         /* ── RIGHT — FORM ── */
         .cp-form-side {
           background: #fff; padding: 72px 64px;
           display: flex; flex-direction: column;
+          box-shadow: inset 4px 0 20px rgba(0,0,0,0.2);
         }
         .cp-form-eyebrow {
           font-family:var(--mono); font-size:9px; letter-spacing:4px; color:#c8102e;
           text-transform:uppercase; margin-bottom:16px; display:flex; align-items:center; gap:10px;
         }
         .cp-form-eyebrow::before { content:''; width:20px; height:1px; background:#c8102e; display:block; }
-        .cp-form-title { font-family:var(--display); font-size:clamp(28px,2.5vw,42px); letter-spacing:2px; color:#111; margin-bottom:8px; line-height:0.95; }
-        .cp-form-sub   { font-size:13px; color:#999; margin-bottom:48px; font-weight:300; line-height:1.8; }
+        .cp-form-title {
+          font-family:var(--display); font-size:clamp(28px,2.5vw,42px);
+          letter-spacing:2px; color:#111; margin-bottom:8px; line-height:0.95;
+        }
+        .cp-form-sub { font-size:13px; color:#999; margin-bottom:48px; font-weight:300; line-height:1.8; }
         .cp-form  { display:flex; flex-direction:column; gap:20px; flex:1; }
         .cp-row   { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
         .cp-field { display:flex; flex-direction:column; gap:8px; }
@@ -345,7 +356,10 @@ export default function ContactPage() {
           background-repeat:no-repeat; background-position:right 14px center; padding-right:36px;
         }
         .cp-textarea { resize:vertical; min-height:120px; font-family:var(--mono); }
-        .cp-error { font-family:var(--mono); font-size:10px; color:#c8102e; padding:12px 14px; border:1px solid rgba(200,16,46,0.2); background:rgba(200,16,46,0.04); }
+        .cp-error {
+          font-family:var(--mono); font-size:10px; color:#c8102e;
+          padding:12px 14px; border:1px solid rgba(200,16,46,0.2); background:rgba(200,16,46,0.04);
+        }
         .cp-actions { display:flex; justify-content:space-between; align-items:center; padding-top:8px; }
         .cp-actions-note { font-family:var(--mono); font-size:8px; letter-spacing:1.5px; color:#ccc; text-transform:uppercase; }
         .cp-submit {
@@ -366,7 +380,8 @@ export default function ContactPage() {
         }
         .cp-success-icon {
           width:64px; height:64px; border-radius:50%; background:rgba(200,16,46,0.08);
-          display:flex; align-items:center; justify-content:center; font-size:24px; color:#c8102e; font-weight:bold;
+          display:flex; align-items:center; justify-content:center;
+          font-size:24px; color:#c8102e; font-weight:bold;
         }
         .cp-success-title { font-family:var(--display); font-size:28px; letter-spacing:2px; color:#111; }
         .cp-success-sub   { font-size:13px; color:#888; line-height:1.8; max-width:280px; }
@@ -379,7 +394,7 @@ export default function ContactPage() {
 
         /* ── MAP MODAL ── */
         .cp-map-overlay {
-          position:fixed; inset:0; z-index:300; background:rgba(0,0,0,0.72);
+          position:fixed; inset:0; z-index:300; background:rgba(0,0,0,0.65);
           backdrop-filter:blur(8px); display:flex; align-items:center; justify-content:center; padding:24px;
         }
         .cp-map-box {
@@ -402,8 +417,8 @@ export default function ContactPage() {
         .cp-map-open-btn:hover { color:#fff; border-color:rgba(255,255,255,0.4); }
         .cp-map-close {
           background:none; border:1px solid rgba(255,255,255,0.12); padding:8px; cursor:pointer;
-          color:rgba(255,255,255,0.4); transition:all 0.2s; display:flex; align-items:center;
-          justify-content:center; margin-left:12px;
+          color:rgba(255,255,255,0.4); transition:all 0.2s;
+          display:flex; align-items:center; justify-content:center; margin-left:12px;
         }
         .cp-map-close:hover { border-color:rgba(255,255,255,0.5); color:#fff; }
         .cp-map-frame-wrap { flex:1; overflow:hidden; }
@@ -411,11 +426,13 @@ export default function ContactPage() {
 
         /* ── BOTTOM STRIP ── */
         .cp-bottom-strip {
-          background:#08111f; border-top:1px solid rgba(255,255,255,0.05);
+          background:#111; border-top:1px solid rgba(255,255,255,0.06);
           display:grid; grid-template-columns:repeat(4,1fr);
+          box-shadow: 0 -8px 40px rgba(0,0,0,0.12);
+          position: relative; z-index: 2;
         }
         .cp-strip-item {
-          padding:36px 40px; border-right:1px solid rgba(255,255,255,0.05);
+          padding:36px 40px; border-right:1px solid rgba(255,255,255,0.06);
           transition:background 0.25s; position:relative; overflow:hidden;
         }
         .cp-strip-item::after {
@@ -424,7 +441,7 @@ export default function ContactPage() {
         }
         .cp-strip-item:hover::after { transform:scaleX(1); }
         .cp-strip-item:last-child { border-right:none; }
-        .cp-strip-item:hover { background:rgba(255,255,255,0.02); }
+        .cp-strip-item:hover { background:rgba(255,255,255,0.03); }
         .cp-strip-label { font-family:var(--mono); font-size:7px; letter-spacing:3px; color:rgba(255,255,255,0.2); text-transform:uppercase; margin-bottom:8px; }
         .cp-strip-val   { font-family:var(--mono); font-size:12px; color:rgba(255,255,255,0.55); line-height:1.6; }
         .cp-strip-val a { color:inherit; text-decoration:none; transition:color 0.2s; }
@@ -432,32 +449,32 @@ export default function ContactPage() {
 
         /* ── RESPONSIVE ── */
         @media (max-width:1024px) {
-          .cp-hero { padding:0 32px 64px; }
+          .cp-hero { padding:100px 32px 64px; }
           .cp-body { grid-template-columns:1fr; }
-          .cp-why-side { border-right:none; border-bottom:1px solid rgba(255,255,255,0.05); }
+          .cp-why-side { border-right:none; border-bottom:1px solid rgba(255,255,255,0.045); }
           .cp-stats-bar { grid-template-columns:repeat(2,1fr); }
           .cp-stat:nth-child(2) { border-right:none; }
           .cp-stat:nth-child(n+3) { border-top:1px solid rgba(255,255,255,0.05); }
           .cp-bottom-strip { grid-template-columns:repeat(2,1fr); }
-          .cp-strip-item:nth-child(2)  { border-right:none; }
-          .cp-strip-item:nth-child(n+3){ border-top:1px solid rgba(255,255,255,0.05); }
+          .cp-strip-item:nth-child(2)   { border-right:none; }
+          .cp-strip-item:nth-child(n+3) { border-top:1px solid rgba(255,255,255,0.06); }
         }
         @media (max-width:768px) {
-          .cp-hero { min-height:auto; padding:80px 24px 56px; }
+          .cp-hero { padding:90px 24px 56px; }
           .cp-hero-meta { flex-wrap:wrap; gap:24px; }
           .cp-why-side { padding:56px 24px; }
           .cp-form-side { padding:56px 24px; }
           .cp-row { grid-template-columns:1fr; }
           .cp-stats-bar { grid-template-columns:1fr 1fr; }
           .cp-bottom-strip { grid-template-columns:1fr; }
-          .cp-strip-item { border-right:none; border-bottom:1px solid rgba(255,255,255,0.05); }
+          .cp-strip-item { border-right:none; border-bottom:1px solid rgba(255,255,255,0.06); }
           .cp-strip-item:last-child { border-bottom:none; }
         }
       `}</style>
 
       <div className="contact-page">
 
-        {/* ── HERO ── */}
+        {/* HERO */}
         <div className="cp-hero">
           <div className="cp-hero-top-line"/>
           <div className="cp-hero-grid"/>
@@ -492,24 +509,18 @@ export default function ContactPage() {
           </div>
         </div>
 
-        {/* ── STATS BAR ── */}
-        <div className="cp-stats-bar" ref={statsRef}>
-          <StatItem value={10}  suffix="+"  label="Years in Qatar"     delay={0}    active={statsActive}/>
-          <StatItem value={100} suffix="+"  label="Projects Delivered"  delay={0.1}  active={statsActive}/>
-          <StatItem value={24}  suffix="/7" label="Support Coverage"    delay={0.2}  active={statsActive}/>
-          <StatItem value={3}   suffix=""   label="Founding Partners"   delay={0.3}  active={statsActive}/>
-        </div>
+      
 
-        {/* ── BODY ── */}
+        <div className="cp-section-sep"/>
+        {/* BODY */}
         <div className="cp-body">
 
-          {/* LEFT — Why contact us */}
+          {/* LEFT */}
           <motion.div className="cp-why-side"
             initial={{opacity:0,x:-24}} animate={{opacity:1,x:0}} transition={{duration:0.7,delay:0.2}}>
             <div className="cp-why-bg-num">WHY</div>
             <p className="cp-why-eyebrow">Why Work With Us</p>
             <h2 className="cp-why-title">5 Reasons to<br/>Choose SAMAM</h2>
-
             <div className="cp-reasons">
               {REASONS.map((r, i) => (
                 <motion.div key={i} className="cp-reason"
@@ -526,22 +537,20 @@ export default function ContactPage() {
                 </motion.div>
               ))}
             </div>
-
             <div className="cp-response-badge">
               <div className="cp-response-dot"/>
               <div className="cp-response-text">
-                Average response time: <strong>&nbsp;&lt; 2 hours&nbsp;</strong> during business hours
+                Average response time: <strong>&nbsp;&lt; 24 hours&nbsp;</strong> during business hours
               </div>
             </div>
           </motion.div>
 
-          {/* RIGHT — Form */}
+          {/* RIGHT */}
           <motion.div className="cp-form-side"
             initial={{opacity:0,x:32}} animate={{opacity:1,x:0}} transition={{duration:0.7,delay:0.3}}>
             <p className="cp-form-eyebrow">Send a Message</p>
             <h2 className="cp-form-title">Start the<br/>Conversation</h2>
             <p className="cp-form-sub">Fill out the form and our team will get back to you within 24 hours.</p>
-
             <AnimatePresence mode="wait">
               {status === "success" ? (
                 <motion.div key="success" className="cp-success"
@@ -601,13 +610,13 @@ export default function ContactPage() {
           </motion.div>
         </div>
 
-        {/* ── BOTTOM STRIP ── */}
+        {/* BOTTOM STRIP */}
         <div className="cp-bottom-strip">
           {[
             { label:"Email",         val:<a href="mailto:info@samam.qa">info@samam.qa</a> },
             { label:"Phone",         val:<a href="tel:+97400000000">+974 XXXX XXXX</a> },
             { label:"Location",      val:<>7G89+4F<br/>Doha, Qatar</> },
-            { label:"Working Hours", val:<>Sun – Thu: 8am – 6pm<br/>24/7 for emergencies</> },
+            { label:"Working Hours", val:<>Sun – Thu: 8am – 4pm<br/>Sat: 8am – 2pm<br/>24/7 for emergencies</> },
           ].map((item, i) => (
             <motion.div key={i} className="cp-strip-item"
               initial={{opacity:0,y:16}} whileInView={{opacity:1,y:0}}

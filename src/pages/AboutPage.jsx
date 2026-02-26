@@ -1,7 +1,6 @@
 import { useState, useRef, useEffect, useMemo, useCallback } from "react";
 import { motion, useMotionValue, useAnimationFrame, useTransform, AnimatePresence } from "motion/react";
 import { useNavigate } from "react-router-dom";
-import samamLogo from "../assets/samam.png";
 
 // ── SHINY TEXT (reused from site) ────────────────────────────
 function ShinyText({ text, speed = 2, color = '#b5b5b5', shineColor = '#ffffff', spread = 120 }) {
@@ -112,7 +111,7 @@ const STATS = [
   { value: "10+", label: "Years in Qatar" },
   { value: "100+", label: "Projects Delivered" },
   { value: "24/7", label: "Support Coverage" },
-  { value: "3", label: "Partner Founders" },
+  
 ];
 
 // ── COUNT-UP STAT ─────────────────────────────────────────────
@@ -252,26 +251,8 @@ export default function AboutPage() {
         }
         @keyframes apGrid { to { background-position: 72px 72px; } }
 
-        /* logo full-bleed bg */
-        .ap-hero-logo-bg {
-          position: absolute; inset: 0; z-index: 2;
-          display: flex; align-items: center; justify-content: center;
-          pointer-events: none; user-select: none;
-          overflow: hidden;
-        }
-        .ap-hero-logo-bg img {
-          width: 100%; height: 100%;
-          object-fit: cover; object-position: center;
-          opacity: 0.07;
-          filter: grayscale(1) brightness(2.5) contrast(1.2);
-          transform: scale(1.05);
-          animation: logoBreath 10s ease-in-out infinite;
-        }
-        @keyframes logoBreath {
-          0%,100% { transform: scale(1.05); opacity: 0.07; }
-          50%      { transform: scale(1.08); opacity: 0.10; }
-        }
-
+  
+        
         /* red glow orb bottom-left */
         .ap-hero-orb {
           position: absolute; z-index: 2;
@@ -289,13 +270,12 @@ export default function AboutPage() {
         }
 
         /* vignette */
-        .ap-hero-vignette {
-          position: absolute; inset: 0; z-index: 3;
-          background:
-            linear-gradient(to right, rgba(6,10,18,0.9) 0%, rgba(6,10,18,0.3) 60%, rgba(6,10,18,0.1) 100%),
-            linear-gradient(to top, rgba(6,10,18,1) 0%, rgba(6,10,18,0.4) 40%, transparent 70%);
-        }
-
+       .ap-hero-vignette {
+  position: absolute; inset: 0; z-index: 3;
+  background:
+    linear-gradient(to right, rgba(6,10,18,0.7) 0%, rgba(6,10,18,0.1) 50%, transparent 100%),
+    linear-gradient(to top, rgba(6,10,18,0.92) 0%, rgba(6,10,18,0.15) 30%, transparent 55%);
+}
         /* content */
         .ap-hero-content { position: relative; z-index: 4; }
         .ap-hero-eyebrow {
@@ -377,14 +357,15 @@ export default function AboutPage() {
 
         /* ── STATS ── */
         .ap-stats {
-          background: #0f1623; padding: 72px 64px;
-          display: grid; grid-template-columns: repeat(4, 1fr); gap: 0;
-          border-top: 1px solid rgba(255,255,255,0.04);
-        }
+  background: #0f1623; padding: 72px 64px;
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  justify-content: center; gap: 0;
+  border-top: 1px solid rgba(255,255,255,0.04);
+}
         .ap-stat {
-          padding: 32px 40px; border-right: 1px solid rgba(255,255,255,0.05);
-          text-align: center;
-        }
+  padding: 32px 40px; border-right: 1px solid rgba(255,255,255,0.05);
+  text-align: center; max-width: 280px; width: 100%;
+}
         .ap-stat:last-child { border-right: none; }
         .ap-stat-value {
           font-family: var(--display); font-size: clamp(40px, 5vw, 64px);
@@ -699,11 +680,7 @@ export default function AboutPage() {
           <div className="ap-hero-grid"/>
           <div className="ap-hero-orb"/>
 
-          {/* Logo watermark */}
-          <div className="ap-hero-logo-bg">
-            <img src={samamLogo} alt="" aria-hidden="true"/>
-          </div>
-
+         
           <div className="ap-hero-vignette"/>
 
           {/* Main content */}
@@ -729,7 +706,7 @@ export default function AboutPage() {
           <motion.div className="ap-hero-badge"
             initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.7, delay: 0.4 }}>
             <div className="ap-hero-badge-label">Headquarters</div>
-            <div className="ap-hero-badge-value">Al Sadd, Doha<br/>State of Qatar</div>
+            <div className="ap-hero-badge-value">Doha<br/>State of Qatar</div>
             <div className="ap-hero-badge-divider"/>
             <div className="ap-hero-badge-label">Founded</div>
             <div className="ap-hero-badge-value">2014</div>
